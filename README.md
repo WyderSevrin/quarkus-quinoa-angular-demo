@@ -1,126 +1,71 @@
-# fullstack-quinoa
+# quarkus-quinoa-angular-demo
 
-Dieses Projekt demonstriert die Quarkus-quinoa Extension:
+This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-* ein Angular Project existiert im selben src Baum wie Quarkus, nämlich unter [./src/main/webui]()
-* `quarkus dev` baut und startet Backend und Frontend im Live-edit Modus
+If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
 
-## Wie man in diesem Projekt arbeitet
+## Running the application in dev mode
 
-Beim Schreiben von Code in diesem Projekt ist es wichtig, vorher den Quarkus Dev Mode zu starten:
+You can run your application in dev mode that enables live coding using:
 
-```bash
+```shell script
 ./mvnw quarkus:dev
-# oder falls Quarkus CLI installiert ist:
-# quarkus dev
 ```
 
-## Bekannte Fehler
+> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
 
-Die Tests laufen auf Fehler, wenn sie innerhalb des Quarkus dev Modus ausgeführt werden.
+## Packaging and running the application
 
-```bash
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 38.60 s -- in quarkitecture.MyWebUITest
-[INFO] Running quarkitecture.AllWebUITest
-2024-09-22 09:23:36,370 INFO  [io.quarkus] (main) fullstack-quinoa stopped in 0.012s
-2024-09-22 09:23:38,097 INFO  [io.qua.qui.dep.fra.FrameworkType] (build-27) Quinoa detected 'ANGULAR' frameworkType from package.json file.
-2024-09-22 09:23:38,121 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) Running Quinoa package manager test command: npm run test
-2024-09-22 09:23:38,281 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9)
-2024-09-22 09:23:38,281 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) > example-ng@0.0.0 test
-2024-09-22 09:23:38,281 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) > ng test --no-watch --no-progress --browsers=ChromeHeadless
-2024-09-22 09:23:38,281 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9)
-2024-09-22 09:23:40,140 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) 22 09 2024 09:23:40.139:INFO [karma-server]: Karma v6.4.2 server started at http://localhost:9876/
-2024-09-22 09:23:40,140 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) 22 09 2024 09:23:40.140:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
-2024-09-22 09:23:40,144 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) 22 09 2024 09:23:40.144:INFO [launcher]: Starting browser ChromeHeadless
-2024-09-22 09:23:40,355 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) 22 09 2024 09:23:40.355:INFO [Chrome Headless 120.0.6099.224 (Linux aarch64)]: Connected on socket v5kp5x_1ldINxmJaAAAB with id 38902576
-2024-09-22 09:23:40,380 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) Chrome Headless 120.0.6099.224 (Linux aarch64): Executed 0 of 0 SUC
-                                                                                  Chrome Headless 120.0.6099.224 (Linux aarch64): Executed 0 of 0 SUCCESS (0 secs / 0 secs)1 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9)
-2024-09-22 09:23:40,381 INFO  [io.qua.qui.dep.pac.PackageManagerRunner] (build-9) TOTAL: 0 SUCCESS
-[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 4.099 s <<< FAILURE! -- in quarkitecture.AllWebUITest
-[ERROR] quarkitecture.AllWebUITest.runTest -- Time elapsed: 0.001 s <<< ERROR!
-java.lang.RuntimeException:
-java.lang.RuntimeException: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
-        [error]: Build step io.quarkiverse.quinoa.deployment.QuinoaProcessor#processBuild threw an exception: java.lang.RuntimeException: Error in Quinoa while running package manager test command: npm run test
-        at io.quarkiverse.quinoa.deployment.packagemanager.PackageManagerRunner.test(PackageManagerRunner.java:95)
-....
-Caused by: java.lang.RuntimeException: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
-        [error]: Build step io.quarkiverse.quinoa.deployment.QuinoaProcessor#processBuild threw an exception: java.lang.RuntimeException: Error in Quinoa while running package manager test command: npm run test
+The application can be packaged using:
+
+```shell script
+./mvnw package
 ```
 
-das test Kommando kann geändert werden in der application.yml Datei, z.B. so (ohne `npm` prefix bitte!):
-```bash
-quarkus:
-  quinoa:
-    enable-spa-routing: true
-    build-dir: dist/example-ng/browser
-    package-manager-command:
-      test: run test
+It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
+Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+
+The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+
+If you want to build an _über-jar_, execute the following command:
+
+```shell script
+./mvnw package -Dquarkus.package.jar.type=uber-jar
 ```
 
-die tests klappen aber leider nur, wenn man auf der Kommandozeile tests startet:
+The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
-```bash
-cd src/main/webui/
-npm run test
-# $ npm run test
-# > example-ng@0.0.0 test
-# > ng test --no-watch --no-progress --browsers=ChromeHeadless
-# 01 03 2024 17:01:21.446:INFO [karma-server]: Karma v6.4.2 server started at http://localhost:9876/
-# 01 03 2024 17:01:21.447:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
-# 01 03 2024 17:01:21.451:INFO [launcher]: Starting browser ChromeHeadless
-# 01 03 2024 17:01:21.743:INFO [Chrome Headless 120.0.6099.224 (Linux aarch64)]: Connected on socket oT_VsXc42yoRbil5AAAB with id 84140249
-# Chrome Headless 120.0.6099.224 (Linux aarch64): Executed 0 of 0 SUCCESS (0.001 secs / 0 secs)
-# TOTAL: 0 SUCCESS
+## Creating a native executable
+
+You can create a native executable using:
+
+```shell script
+./mvnw package -Dnative
 ```
 
-## Wie man ein Quinoa Projekt erzeugt
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
 
-1. `yq`installieren
+```shell script
+./mvnw package -Dnative -Dquarkus.native.container-build=true
+```
 
-    Mit yq werden gleich die Quarkus Konfiguationseinstellungen des Projekts gesetzt, nachdem diese auf yaml Format umgestellt worden sind.
+You can then execute your native executable with: `./target/quarkus-quinoa-demo-1.0.0-SNAPSHOT-runner`
 
-    * MacOS: `brew install yq@3`
-    * DevContainer
+If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
-      ```bash
+## Related Guides
 
-      sudo apt update
-      sudo apt install python3-pip -y
-      pip install yq
-      ```
+- Quinoa ([guide](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/index.html)): Develop, build, and serve your npm-compatible web applications such as React, Angular, Vue, Lit, Svelte, Astro, SolidJS, and others alongside Quarkus.
 
-2. Erzeuge ein Quarkus Projekt im aktuellen Ordner
+## Provided Code
 
-    ```bash
-    quarkus create app quarkitecture:fullstack-quinoa --java=17 --wrapper
-    ```
+### Quinoa
 
-    * der Projektorder wird unter dem Namen `fullstack-quinoa` angelegt
+Quinoa codestart added a tiny Vite app in src/main/webui. The page is configured to be visible on <a href="/quinoa">/quinoa</a>.
 
-3. Ergänze quinoa und initialisiere Angular
+[Related guide section...](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/index.html)
 
-    ```bash
-    cd fullstack-quinoa
-    quarkus ext add config-yaml resteasy-reactive-jackson
-    quarkus ext add quinoa
 
-    # statt application.properties eine .yaml benutzen:
-    mv src/main/resources/application.properties src/main/resources/application.yml
 
-    yq -i '.quarkus.quinoa.enable-spa-routing = true' src/main/resources/application.yml
-    yq -i '.quarkus.quinoa.build-dir = "dist/example-ng/browser"' src/main/resources/application.yml
-    mkdir src/main/webui
 
-    # Angular cli installieren
-    npm install @angular/cli -g
-    # Angular Projekt erzeugen (angular)
-    ng new --routing --style scss --directory src/main/webui -g --ssr false --standalone false example-ng
-    ```
 
-### Quellen
-
-* Quarkus Quinoa Guide im quarkiverse
-  * <https://docs.quarkiverse.io/quarkus-quinoa/dev/index.html>
-
-* Erstes Projekt
-  * <https://stephennimmo.com/2023/12/01/full-stack-development-quarkus-and-angular-with-quinoa/>
